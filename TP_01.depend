@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1605421227 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+	"fornecido.h"
+
+1605395629 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\lded.h
+
+1602823802 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\fornecido.h
+
+1602911016 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\fornecido.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+
+1605417298 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\lded.c
+	<stdio.h>
+	<stdlib.h>
+	"LDED.h"
+
