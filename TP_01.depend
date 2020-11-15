@@ -1,12 +1,16 @@
 # depslib dependency file v1.0
-1605455011 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\main.c
+1605461722 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"LDED.h"
 	"fornecido.h"
+	"funcionalidade1.h"
+	"funcionalidade2.h"
+	"LDED.h"
+	"fornecido.h"
 
-1605395629 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\lded.h
+1605458150 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\lded.h
 
 1602823802 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\fornecido.h
 
@@ -19,5 +23,24 @@
 1605417298 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\lded.c
 	<stdio.h>
 	<stdlib.h>
+	"LDED.h"
+
+1605461111 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\funcionalidade1.h
+	"LDED.h"
+
+1605461127 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\funcionalidade1.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funcionalidade1.h"
+	"fornecido.h"
+
+1605460984 source:c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\funcionalidade2.c
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+	"funcionalidade2.h"
+
+1605458337 c:\users\vini-\documents\facu\4 semestre\ed 3\projeto_1\tp_01\funcionalidade2.h
 	"LDED.h"
 

@@ -1,14 +1,22 @@
-// Arquivo LDED.h - Lista Dinamica Encadeada Dupla
-// LDED para dados tipo Void * [Multiplos tipos de dados diferentes em um só TAD]
-
 #define FALSO      0
 #define VERDADEIRO 1
 
 #define OK         1
 #define ERRO       0
 
-// 3 tipos de dados diferentes para uso nas listas
+typedef struct {
+    char status;
+    int qtdPessoas;
+} cabecalhoArqPessoa;
 
+typedef struct dadoPessoa
+{
+    char removido;
+    int idPessoa;
+    char nomePessoa[40];
+    int idadePessoa;
+    char twitterPessoa[15];
+} dadoPessoa;
 
 typedef struct indexaPessoa {
     int idPessoa;

@@ -2,27 +2,33 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+#include "LDED.h"
+#include "fornecido.h"
+#include "funcionalidade1.h"
+#include "funcionalidade2.h"
+*/
 #include "LDED.h"
 #include "fornecido.h"
 
+//funcionalidade1.h -----------------------------------------------
 char LIXO = '$';
 int TAM_REG = 64;
 int NULL_INT = -1;
 int STR_END = '\0';
 
-typedef struct dadoPessoa
-{
-    char removido;
-    int idPessoa;
-    char nomePessoa[40];
-    int idadePessoa;
-    char twitterPessoa[15];
-} dadoPessoa;
+int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
+int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp);
+void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pessoa);
+int montaIndex(char *nomeArqIndex, Lista* li);
+//funcionalidade1.h -----------------------------------------------
 
-typedef struct {
-    char status;
-    int qtdPessoas;
-} cabecalhoArqPessoa;
+
+
+
+
+
+//funcionalidade1.c -----------------------------------------------
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp) {
     if(!fileP) {
@@ -60,32 +66,13 @@ int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp)
    return OK;
 }
 
-
-/*
-void lerBinario(FILE* fileP) {
-
-    char status;
-    rewind(fileP);
-    fread(&status, 1, 1, fileP);
-
-    if(status == '0') {
-        printf("Falha no processamento do arquivo.\n");
-        return;
-    }
-
-    int qtdPessoas;
-    fread(&qtdPessoas, sizeof(int), 1, fileP);
-
-
-} */
-
 void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pessoa) {
     if(fileP == NULL) {
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    //atualização cabecalho
+    //atualizaÃ§Ã£o cabecalho
     int i;
 
     //escrever informacao
@@ -129,8 +116,8 @@ void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pe
     insere_lista_ordenada(li, ip);
 }
 
-//presume-se que a lista encadeada ja esta atualizada com o index lido
-int montaIndex(char *nomeArqIndex, Lista* li) {
+int montaIndex(char *nomeArqIndex, Lista* li)
+{
     FILE *fileI;
 
     fileI = fopen(nomeArqIndex, "wb");
@@ -169,9 +156,110 @@ int montaIndex(char *nomeArqIndex, Lista* li) {
     return OK;
 }
 
+//funcionalidade1.c -----------------------------------------------
+
+
+
+
+
+
+//funcionalidade2.h -----------------------------------------------
+
+void printaFormatado(dadoPessoa pessoa);
+void printaFormatado(dadoPessoa pessoa);
+
+//funcionalidade2.h -----------------------------------------------
+
+
+
+
+
+
+//funcionalidade2.c -----------------------------------------------
+
+void leBinario(FILE* fileP)
+{
+    if(fileP == NULL)
+    {
+        printf("Falha no processamento do arquivo.");
+    }
+
+    rewind(fileP);
+    char status;
+    fread(&status, sizeof(char), 1, fileP);
+
+    if(status == '0')
+    {
+        printf("Falha no processamento do arquivo.");
+        return;
+    }
+    else
+    {
+        int TAM_REG = 64;
+        int qtdPessoas;
+        fread(&qtdPessoas, sizeof(int), 1, fileP);
+
+        for(int i = 0; i <= qtdPessoas; i++)
+        {
+            char removido;
+            dadoPessoa pessoa;
+
+            fseek(fileP, (i+1)*TAM_REG, SEEK_SET);
+            fread(&removido, sizeof(char), 1, fileP);
+
+            if(removido == '1')
+            {
+                //lendo id
+                fread(&(pessoa.idPessoa), sizeof(int), 1, fileP);
+
+                //lendo nome
+                fread(pessoa.nomePessoa, sizeof(char), 40, fileP);
+
+                //lendo idade
+                fread(&(pessoa.idadePessoa), sizeof(int), 1, fileP);
+
+                //lendo twitter
+                fread(pessoa.twitterPessoa, sizeof(char), 15, fileP);
+
+                printaFormatado(pessoa);
+            }
+            else
+            {
+                printf("Registro inexistente.");
+            }
+        }
+    }
+}
+
+void printaFormatado(dadoPessoa pessoa)
+{
+    printf("Dados da pessoa de cÃ³digo %d\n", pessoa.idPessoa);
+
+    if(strlen(pessoa.nomePessoa) > 0)
+        printf("Nome: %s\n", pessoa.nomePessoa);
+    else
+        printf("Nome: -\n");
+
+    if(pessoa.idadePessoa == -1)
+        printf("Idade: -\n", pessoa.idadePessoa);
+    else
+        printf("Idade: %d anos\n", pessoa.idadePessoa);
+
+    printf("Twitter: %s\n\n", pessoa.twitterPessoa);
+
+}
+
+
+//funcionalidade2.c -----------------------------------------------
+
+
+
+
+
 int main()
 {
     int funcionalidade;
+
 
     scanf("%d", &funcionalidade);
 
@@ -183,7 +271,6 @@ int main()
         FILE *fileP; //arquivos de escrita: pessoa e index
         Lista *li = cria_lista(); //criando lista duplamente encadeada
         cabecalhoArqPessoa cp; //cabecalho do arquivo pessoa
-        char lixo;
 
         scanf("%s", buffer);
         csv = fopen(buffer, "r");
@@ -257,6 +344,23 @@ int main()
         libera_lista(li);
 
         binarioNaTela1(nomeArquivoPessoa, nomeArquivoIndex);
+    }
+
+    else if(funcionalidade == 2)
+    {
+        char nomeArq[20];
+        FILE* fileP;
+
+        scanf("%s", nomeArq);
+
+        fileP = fopen(nomeArq, "rb");
+        if(fileP == NULL)
+        {
+            printf("Falha no processamento do arquivo.");
+            return ERRO;
+        }
+
+        leBinario(fileP);
     }
 
 
