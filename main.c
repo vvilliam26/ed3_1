@@ -10,7 +10,8 @@ int TAM_REG = 64;
 int NULL_INT = -1;
 int STR_END = '\0';
 
-typedef struct {
+typedef struct dadoPessoa
+{
     char removido;
     int idPessoa;
     char nomePessoa[40];
@@ -207,19 +208,19 @@ int main()
 
         fseek(csv, 45, SEEK_SET); //pulando o cabecalho do arquivo csv
         int auxIdPessoa; //criei para auxiliar no while abaixo
-        char auxNomePessoa[40]; //aux criado para validacao
+        char auxNomePessoa[60]; //aux criado para validacao
+        dadoPessoa pessoa;
 
         //leitura id
-        while(fscanf(csv, "%d", &auxIdPessoa) > 0)
+        while(fscanf(csv, "%d%*c", &auxIdPessoa) > 0)
         {
-            dadoPessoa pessoa;
-
             //valores padrao
             pessoa.idPessoa = auxIdPessoa;
             pessoa.removido = '1';
+            strcpy(auxNomePessoa, "init");
 
             //lendo nome pessoa
-            if(fscanf(csv, "%*c%[^,]s", auxNomePessoa) > 0)
+            if(fscanf(csv, "%[^,]s", auxNomePessoa) > 0)
             {
                 trim(auxNomePessoa);
                 strncpy(pessoa.nomePessoa, auxNomePessoa, 39);
@@ -228,7 +229,7 @@ int main()
             {
                 auxNomePessoa[0] = '\0';
                 trim(auxNomePessoa);
-                strcpy(pessoa.nomePessoa, auxNomePessoa);
+                strncpy(pessoa.nomePessoa, auxNomePessoa, 1);
             }
 
             //printf("\n%s\n", pessoa.nomePessoa);
@@ -236,10 +237,11 @@ int main()
             fscanf(csv, "%*c%d%*c", &(pessoa.idadePessoa));
 
             //leitura twitter pessoa
-            fscanf(csv, "%[^\n]s%*c", pessoa.twitterPessoa);
+            fscanf(csv, "%s", pessoa.twitterPessoa);
             trim(pessoa.twitterPessoa);
 
-            printf("\n%d,%s,%d,%s \n", pessoa.idPessoa, pessoa.nomePessoa, pessoa.idadePessoa, pessoa.twitterPessoa);
+            //printf("\n%d,%s,%d,%s \n", pessoa.idPessoa, pessoa.nomePessoa, pessoa.idadePessoa, pessoa.twitterPessoa);
+
 
             //inserindo no arquivo binario
             insereBinario(fileP, &cp, li, pessoa);
