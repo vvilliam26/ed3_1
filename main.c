@@ -11,6 +11,11 @@
 #include "LDED.h"
 #include "fornecido.h"
 
+// Vinicius William da Silva - 11233842
+// Gabriel Fernandes Araujo - 11200334
+
+
+
 
 //funcionalidade1.h -----------------------------------------------
 static char LIXO = '$';
@@ -422,9 +427,6 @@ void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
             printf("Registro inexistente.");
 
     }
-
-
-
 }
 
 int checaIntegridadeP(FILE* fileP)
@@ -469,6 +471,31 @@ int checaIntegridadeI(FILE *fileI)
 
 
 
+//funcionalidade4.h -----------------------------------------------
+
+
+//funcionalidade4.h -----------------------------------------------
+
+
+
+//funcionalidade4.c -----------------------------------------------
+
+void insereRegistros(FILE* fileP, FILE* fileI)
+{
+    int n;
+
+    scanf("%d", &d);
+
+
+}
+
+
+//funcionalidade4.c -----------------------------------------------
+
+
+
+
+
 int main()
 {
     int funcionalidade;
@@ -478,15 +505,15 @@ int main()
 
     if(funcionalidade == 1) //leitura e gravacao de arquivos
     {
-        char buffer[40];
+        char nomeArqCsv[40];
         char nomeArquivoPessoa[40], nomeArquivoIndex[40];
         FILE *csv; //arquivo de leitura
         FILE *fileP; //arquivos de escrita: pessoa e index
         Lista *li = cria_lista(); //criando lista duplamente encadeada
         cabecalhoArqPessoa cp; //cabecalho do arquivo pessoa
 
-        scanf("%s", buffer);
-        csv = fopen(buffer, "r");
+        scanf("%s", nomeArqCsv);
+        csv = fopen(nomeArqCsv, "r");
         if(csv == NULL)
         {
             printf("Falha no carregamento do arquivo.\n");
@@ -619,6 +646,10 @@ int main()
         fclose(fileP);
     }
 
+    else if(funcionalidade == 4)
+    {
+
+    }
 
     return 0;
 }
