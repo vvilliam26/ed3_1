@@ -1,0 +1,14 @@
+all: LDED.o LDED.h fornecido.o fornecido.h main.o
+	@gcc fornecido.o LDED.o main.o -o programa
+
+fornecido.o:
+	@gcc -c fornecido.c
+
+LDED.o:
+	@gcc -c LDED.c
+
+main.o:
+	@gcc -c main.c 
+
+run:
+	@./programa

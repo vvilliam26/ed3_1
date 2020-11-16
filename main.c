@@ -11,11 +11,11 @@
 #include "LDED.h"
 #include "fornecido.h"
 
+
 //funcionalidade1.h -----------------------------------------------
-char LIXO = '$';
-int TAM_REG = 64;
-int NULL_INT = -1;
-int STR_END = '\0';
+static char LIXO = '$';
+static int TAM_REG = 64;
+static int STR_END = '\0';
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
 int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp);
@@ -32,7 +32,7 @@ int montaIndex(char *nomeArqIndex, Lista* li);
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp) {
     if(!fileP) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
 
@@ -55,7 +55,7 @@ int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp)
 {
    if(fileP == NULL)
    {
-       printf("Falha no processamento do arquivo.\n");
+       printf("Falha no carregamento do arquivo.\n");
        return ERRO;
    }
 
@@ -68,7 +68,7 @@ int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp)
 
 void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pessoa) {
     if(fileP == NULL) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
@@ -124,7 +124,7 @@ int montaIndex(char *nomeArqIndex, Lista* li)
     char status = '0';
 
     if(fileI == NULL) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
 
@@ -165,7 +165,6 @@ int montaIndex(char *nomeArqIndex, Lista* li)
 
 //funcionalidade2.h -----------------------------------------------
 
-void printaFormatado(dadoPessoa pessoa);
 void printaFormatado(dadoPessoa pessoa);
 
 //funcionalidade2.h -----------------------------------------------
@@ -223,11 +222,11 @@ void leBinario(FILE* fileP)
 
                 printaFormatado(pessoa);
             }
-            else
-            {
-                printf("Registro inexistente.");
-            }
         }
+
+        if(qtdPessoas == 0)
+            printf("Registro inexistente.\n");
+
     }
 }
 
@@ -241,16 +240,230 @@ void printaFormatado(dadoPessoa pessoa)
         printf("Nome: -\n");
 
     if(pessoa.idadePessoa == -1)
-        printf("Idade: -\n", pessoa.idadePessoa);
+        printf("Idade: -\n");
     else
         printf("Idade: %d anos\n", pessoa.idadePessoa);
 
     printf("Twitter: %s\n\n", pessoa.twitterPessoa);
 
+
+
 }
 
 
 //funcionalidade2.c -----------------------------------------------
+
+
+
+
+
+
+//funcionalidade3.h -----------------------------------------------
+
+void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo);
+int checaIntegridadeP(FILE* fileP);
+int checaIntegridadeI(FILE *fileI);
+
+//funcionalidade3.h -----------------------------------------------
+
+
+
+
+//funcionalidade3.c -----------------------------------------------
+
+void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
+{
+    //busca por id
+    if(strcmp(nomeDoCampo, "idPessoa") == 0)
+    {
+        int id;
+        int rrn;
+        int idTeste;
+        scanf("%d", &id);
+
+        //acha o rrn pelo indexPessoa
+        fseek(fileI, (id * 8)+4, SEEK_SET); //estah contando com o cabecalho
+        fread(&rrn, sizeof(int), 1, fileI);
+
+        //le os dados em pessoa pelo rrn
+        char removido;
+        fseek(fileP, ((rrn+1) * TAM_REG), SEEK_SET); //pula o cabecalho e os outros registros
+        fread(&removido, sizeof(char), 1, fileP);
+        fread(&idTeste, sizeof(int), 1, fileP);
+        if(idTeste != id)
+        {
+            printf("Registro inexistente.\n");
+            return;
+        }
+        fseek(fileP, -sizeof(int), SEEK_CUR);
+
+        if(removido == '1')
+        {
+            dadoPessoa pessoa;
+
+            //le id
+            fread(&(pessoa.idPessoa), sizeof(int), 1, fileP);
+
+            //le nome
+            fread(pessoa.nomePessoa, sizeof(char), 40, fileP);
+
+            //le idade
+            fread(&(pessoa.idadePessoa), sizeof(int), 1, fileP);
+
+            //le twitter
+            fread(pessoa.twitterPessoa, sizeof(char), 15, fileP);
+
+           printaFormatado(pessoa);
+        } else {
+            printf("Registro inexistente."); //registro removido
+        }
+    }
+
+    else if(strcmp(nomeDoCampo, "nomePessoa") == 0)
+    {
+        char nomeValor[45];
+        dadoPessoa pessoa;
+        int qtdPessoas;
+        scanf("%s", nomeValor);
+
+        fseek(fileP, 1, SEEK_SET);
+        fread(&qtdPessoas, sizeof(int), 1, fileP);
+        pessoa.removido = '0';
+
+        rewind(fileP);
+        if(qtdPessoas > 0 )
+        {
+
+            while(fseek(fileP, (64+5), SEEK_CUR) == 0) //cabecalho + 5 bytes de removido e id
+            {
+                fread(pessoa.nomePessoa, sizeof(char), 40, fileP);
+
+                if(strcmp(nomeValor, pessoa.nomePessoa) == 0)
+                {
+                    fseek(fileP, -(40+4+1), SEEK_CUR); //volta o ponteiro pro comeco do registro
+
+                    //le removido
+                    fread(&(pessoa.removido), sizeof(char), 1, fileP);
+                    if(pessoa.removido == '0') //sai do looping pois n adianta ler mais nada
+                        break;
+
+
+                    //nome ja foi lido
+                    fseek(fileP, 40, SEEK_CUR);
+
+
+                    //le idade
+                    fread(&(pessoa.idadePessoa), sizeof(int), 1, fileP);
+
+                    //le twitter
+                    fread(pessoa.twitterPessoa, sizeof(char), 15, fileP);
+
+                    break;
+                }
+            }
+
+            if(pessoa.removido == '0')
+                printf("Registro inexistente.\n ");
+            else
+                printaFormatado(pessoa);
+        } else
+            printf("Registro inexistente.\n");
+
+    }
+
+    else if(strcmp(nomeDoCampo, "idadePessoa") == 0)
+    {
+        int idade;
+        dadoPessoa pessoa;
+        int qtd = 0; //quantidade de registros achados
+
+        scanf("%d", &idade);
+
+        fseek(fileP, 45, SEEK_SET); //posicionando para cair na parte de idades
+
+        while(idade) //pula removida, id pessoa e nome
+        {
+            fseek(fileP, (64), SEEK_CUR);
+            if(fread(&(pessoa.idadePessoa), sizeof(int), 1, fileP) == 0)
+                break;
+
+            if(pessoa.idadePessoa == idade)
+            {
+                fseek(fileP, -(4+40+4+1), SEEK_CUR);
+
+                fread(&(pessoa.removido), sizeof(char), 1, fileP);
+                if(pessoa.removido == '1')
+                {
+                    fread(&(pessoa.idPessoa), sizeof(int), 1, fileP);
+
+                    fread(pessoa.nomePessoa, sizeof(char), 40, fileP);
+
+                    //idade ja lida
+                    fseek(fileP, sizeof(int), SEEK_CUR);
+
+                    fread(pessoa.twitterPessoa, sizeof(char), 15, fileP);
+
+                    printaFormatado(pessoa);
+
+                    qtd++;
+
+                    fseek(fileP, -(15+4), SEEK_CUR);
+                }
+                else
+                    fseek(fileP, 4+40+4, SEEK_CUR);
+            }
+            else
+            {
+                fseek(fileP, -4, SEEK_CUR);
+            }
+        }
+
+        if(qtd == 0)
+            printf("Registro inexistente.");
+
+    }
+
+
+
+}
+
+int checaIntegridadeP(FILE* fileP)
+{
+    if(fileP == NULL)   return 0;
+
+    int qtdPessoas;
+    char status;
+
+    rewind(fileP);
+    fread(&status, sizeof(char), 1, fileP);
+    fread(&qtdPessoas, sizeof(int), 1, fileP);
+
+    if(status == '0')
+        return -1;
+    else if(qtdPessoas <= 0)
+        return 0;
+
+    return 1;
+}
+
+int checaIntegridadeI(FILE *fileI)
+{
+    if(fileI == NULL)   return 0;
+
+    char status;
+
+    rewind(fileI);
+    fread(&status, sizeof(char), 1, fileI);
+
+    if(status == '0')
+        return -1;
+
+    return 1;
+}
+
+//funcionalidade3.c -----------------------------------------------
+
+
 
 
 
@@ -276,7 +489,7 @@ int main()
         csv = fopen(buffer, "r");
         if(csv == NULL)
         {
-            printf("Falha no processamento do arquivo.\n");
+            printf("Falha no carregamento do arquivo.\n");
             return ERRO;
         }
 
@@ -284,7 +497,7 @@ int main()
         fileP = fopen(nomeArquivoPessoa, "wb");
         if(fileP == NULL)
         {
-            printf("Falha no processamento do arquivo.\n");
+            printf("Falha no carregamento do arquivo.\n");
             return ERRO;
         }
 
@@ -295,7 +508,7 @@ int main()
 
         fseek(csv, 45, SEEK_SET); //pulando o cabecalho do arquivo csv
         int auxIdPessoa; //criei para auxiliar no while abaixo
-        char auxNomePessoa[60]; //aux criado para validacao
+        char auxNomePessoa[100]; //aux criado para validacao
         dadoPessoa pessoa;
 
         //leitura id
@@ -304,7 +517,7 @@ int main()
             //valores padrao
             pessoa.idPessoa = auxIdPessoa;
             pessoa.removido = '1';
-            strcpy(auxNomePessoa, "init");
+            strcpy(auxNomePessoa, "init"); //retirando o lixo da variavel
 
             //lendo nome pessoa
             if(fscanf(csv, "%[^,]s", auxNomePessoa) > 0)
@@ -318,8 +531,6 @@ int main()
                 trim(auxNomePessoa);
                 strncpy(pessoa.nomePessoa, auxNomePessoa, 1);
             }
-
-            //printf("\n%s\n", pessoa.nomePessoa);
 
             fscanf(csv, "%*c%d%*c", &(pessoa.idadePessoa));
 
@@ -361,6 +572,51 @@ int main()
         }
 
         leBinario(fileP);
+    }
+
+    else if(funcionalidade == 3)
+    {
+        char nomeFileP[20], nomeFileI[20];
+        char nomeCampo[20];
+        FILE* fileP, *fileI;
+
+        scanf("%s", nomeFileP);
+        scanf("%s", nomeFileI);
+
+        fileP = fopen(nomeFileP, "rb");
+
+        if(fileP == NULL)
+        {
+            printf("Falha no processamento do arquivo.\n");
+            return 0;
+        }
+
+        fileI = fopen(nomeFileI, "rb");
+        if(fileI == NULL)
+        {
+            printf("Falha no processamento do arquivo.\n");
+            return 0;
+        }
+
+        scanf("%s", nomeCampo);
+
+
+        //checa integridade do arquivo
+        if(checaIntegridadeP(fileP) == -1 || checaIntegridadeI(fileI) == -1)
+        {
+           printf("Falha no processamento do arquivo.\n");
+           return 0;
+        }
+        else if(checaIntegridadeP(fileP) == 0)
+        {
+            printf("Registro inexistente.\n");
+            return 0;
+        }
+
+        buscaRegistro(fileP, fileI, nomeCampo);
+
+        fclose(fileI);
+        fclose(fileP);
     }
 
 

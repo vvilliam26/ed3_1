@@ -1,3 +1,5 @@
+/*
+
 #ifndef FUNCIONALIDADE2_H_INCLUDED
 #define FUNCIONALIDADE2_H_INCLUDED
 
@@ -8,3 +10,4 @@ void printaFormatado(dadoPessoa pessoa);
 
 
 #endif // FUNCIONALIDADE2_H_INCLUDED
+*/

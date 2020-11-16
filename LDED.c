@@ -20,7 +20,6 @@ void libera_lista(Lista* li)
 		{
             no = *li;
             *li = (*li)->prox;
-            free(&(no->dado));
             free(no);
         }
         free(li);
