@@ -482,9 +482,9 @@ int checaIntegridadeI(FILE *fileI)
 
 void insereRegistros(FILE* fileP, FILE* fileI)
 {
-    int n;
+    //int n;
 
-    scanf("%d", &d);
+    //scanf("%d", &d);
 
 
 }
