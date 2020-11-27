@@ -585,6 +585,121 @@ void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSeg
     insere_lista_segue(li, segue);
 }
 
+//funcionalidade7.c
+int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
+{
+    //Abre arquivo inicial
+    FILE* arquivoSegue = fopen(nomeArquivoSegue, "rb");
+
+    if(arquivoSegue == NULL) {
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    rewind(arquivoSegue);
+    char status;
+    fread(&status, sizeof(char), 1, arquivoSegue);
+
+    //Cria Lista
+    Lista2* li;
+    li = cria_lista2();
+
+    //Checa se o arquivo foi aberto corretamente
+    if(status == '0')
+    {
+        printf("Falha no processamento do arquivo.");
+        return;
+    }
+    else
+    {
+        int TAM_REG = 64;
+        int followers;
+        fread(&followers, sizeof(int), 1, arquivoSegue);
+
+        for(int i = 0; i <= followers; i++)
+        {
+            registroSegue segue;
+
+            fseek(arquivoSegue, (i+1)*TAM_REG, SEEK_SET);
+
+            //le removido
+            fread(&(segue.removido), sizeof(segue.removido), 1, arquivoSegue);
+            //le idPessoa que segue
+            fread(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 4, arquivoSegue);
+            //le idPessoa que eh seguida
+            fread(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 4, arquivoSegue);
+            //le grau de amizade
+            fread(segue.grauAmizade, sizeof(segue.grauAmizade), 3, arquivoSegue);
+            //le data inicio que segue
+            fread(segue.startDateSegue, sizeof(segue.startDateSegue), 10, arquivoSegue);
+            //le data fim que segue
+            fread(segue.endDateSegue, sizeof(segue.endDateSegue), 10, arquivoSegue);
+
+            insere_lista_ordenada_segue(li, segue);
+
+            followers--;
+        }
+
+        if(followers == 0)
+            printf("Registro inexistente.\n");
+
+    }
+
+    //Fechando o arquivo segue
+
+    fclose(arquivoSegue);
+
+    //Abrindo o arquivo segue ordenado
+    FILE* arquivoSegueOrdenado = fopen(nomeArquivoSegueOrdenado, "wb");
+
+    //Inicializar o cabeçalho
+    rewind(arquivoSegueOrdenado);
+    fwrite(&status, sizeof(char), 1, arquivoSegueOrdenado);
+
+    //Checa se o arquivo foi aberto corretamente
+    if(status == '0')
+    {
+        printf("Falha no processamento do arquivo.");
+        return;
+    }
+    else
+    {
+        int TAM_REG = 64;
+        int followers;
+        fwrite(&followers, sizeof(int), 1, arquivoSegueOrdenado);
+
+        for(int i = 0; i <= followers; i++)
+        {
+            registroSegue segue;
+
+            fseek(arquivoSegue, (i+1)*TAM_REG, SEEK_SET);
+
+            //le removido
+            fwrite(&(segue.removido), sizeof(segue.removido), 1, arquivoSegueOrdenado);
+            //le idPessoa que segue
+            fwrite(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 4, arquivoSegueOrdenado);
+            //le idPessoa que eh seguida
+            fwrite(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 4, arquivoSegueOrdenado);
+            //le grau de amizade
+            fwrite(segue.grauAmizade, sizeof(segue.grauAmizade), 3, arquivoSegueOrdenado);
+            //le data inicio que segue
+            fwrite(segue.startDateSegue, sizeof(segue.startDateSegue), 10, arquivoSegueOrdenado);
+            //le data fim que segue
+            fwrite(segue.endDateSegue, sizeof(segue.endDateSegue), 10, arquivoSegueOrdenado);
+            followers--;
+        }
+
+        if(followers == 0)
+            printf("Registro inexistente.\n");
+
+    }
+
+    libera_lista2(li);
+    fclose(arquivoSegueOrdenado);
+
+    binarioNaTela2(nomeArquivoSegueOrdenado);
+    return OK;
+}
 
 
 int main()
@@ -766,7 +881,7 @@ int main()
             return ERRO;
         }
 
-        inicializaCabecalhoSegue(fileP, &cp); //monta cabecalho arquivo pessoa
+        inicializaCabecalhoSegue(fileP, &cp); //monta cabecalho arquivo segue
 
         fseek(csv, 45, SEEK_SET); //pulando o cabecalho do arquivo csv
         int auxIdPessoa; //criei para auxiliar no while abaixo
@@ -786,7 +901,7 @@ int main()
             fscanf(csv, "%*c%[^,]", segue.startDateSegue);
             fscanf(csv, "%*c%[^,\n]", segue.endDateSegue);
 
-            printf("\n%d,%d,%s,%s,%s \n", segue.idPessoaSegue, segue.idPessoaSeguida, segue.grauAmizade, segue.startDateSegue, segue.endDateSegue);
+            //printf("\n%d,%d,%s,%s,%s \n", segue.idPessoaSegue, segue.idPessoaSeguida, segue.grauAmizade, segue.startDateSegue, segue.endDateSegue);
 
             segue.grauAmizade[2] = '$';
             //inserindo no arquivo binario
@@ -801,6 +916,12 @@ int main()
         libera_lista2(li);
 
         binarioNaTela2(nomeArquivoSegue);
+    }
+
+    else if(funcionalidade == 7) {
+        char nomeArquivoSegue, nomeArquivoSegueOrdenado;
+        scanf("%s %s", nomeArquivoSegue, nomeArquivoSegueOrdenado);
+        leBinarioSegue(nomeArquivoSegue,nomeArquivoSegueOrdenado);
     }
 
     return 0;

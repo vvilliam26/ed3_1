@@ -50,14 +50,14 @@
 	<stdio.h>
 	<ctype.h>
 
-1606425882 source:c:\users\gabri\ed3\ed3_1\lded.c
+1606484230 source:c:\users\gabri\ed3\ed3_1\lded.c
 	<stdio.h>
 	<stdlib.h>
 	"LDED.h"
 
-1606426411 c:\users\gabri\ed3\ed3_1\lded.h
+1606489098 c:\users\gabri\ed3\ed3_1\lded.h
 
-1606427413 source:c:\users\gabri\ed3\ed3_1\main.c
+1606489128 source:c:\users\gabri\ed3\ed3_1\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

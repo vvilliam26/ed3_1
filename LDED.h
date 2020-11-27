@@ -27,7 +27,7 @@ typedef struct indexaPessoa {
 //Structs referentes ao trabalho 2
 typedef struct {
     char status;
-    int followers;
+    int followers; //Seguidores
 } cabecalhoSegue;
 
 typedef struct registroSegue
@@ -39,6 +39,7 @@ typedef struct registroSegue
     char startDateSegue[10];
     char endDateSegue[10];
 }registroSegue;
+// -------------------//-----------------------
 
 //Definição do tipo lista
 struct elemento{
@@ -61,11 +62,16 @@ typedef struct elemento2 Elem2;
 typedef struct elemento2* Lista2;
 
 Lista* cria_lista();
-Lista2* criaLista2();
 
 void libera_lista(Lista* li);
+
+//Funcoes Trabalho 2
+
+Lista2* criaLista2();
 void liberaLista2(Lista2* li);
-void insere_lista_segue(Lista2* li, registroSegue dt);
+int insere_lista_segue(Lista2* li, registroSegue dt);
+int insere_lista_ordenada_segue(Lista2* li, registroSegue dt);
+// -------------------//-----------------------
 
 int insere_lista_final(Lista* li, indexaPessoa dt);
 int insere_lista_ordenada(Lista* li, indexaPessoa dt);
