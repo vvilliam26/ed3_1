@@ -11,6 +11,14 @@ Lista* cria_lista()
     return li;
 }
 
+Lista2* cria_lista2()
+{
+    Lista2* li = (Lista2*) malloc(sizeof(Lista2));
+    if (li != NULL)
+        *li = NULL;
+    return li;
+}
+
 void libera_lista(Lista* li)
 {
     if (li != NULL)
@@ -24,6 +32,48 @@ void libera_lista(Lista* li)
         }
         free(li);
     }
+}
+
+void libera_lista2(Lista2* li)
+{
+    if (li != NULL)
+	{
+        Elem2* no;
+        while ((*li) != NULL)
+		{
+            no = *li;
+            *li = (*li)->prox;
+            free(no);
+        }
+        free(li);
+    }
+}
+
+void insere_lista_segue(Lista2* li, registroSegue dt){
+    Elem2 *no;
+
+    if (li == NULL) return ERRO;
+    no = (Elem2*) malloc(sizeof(Elem));
+    if (no == NULL)  return ERRO;
+
+    no->dado = dt;
+    no->prox = NULL;
+
+	if ((*li) == NULL)
+	{   //lista vazia: insere início
+        no->ant = NULL;
+        *li = no;
+    }else
+	{
+        Elem *aux;
+        aux = *li;
+        while (aux->prox != NULL){
+            aux = aux->prox;
+        }
+        aux->prox = no;
+        no->ant = aux;
+    }
+    return OK;
 }
 
 int insere_lista_final(Lista* li, indexaPessoa dt)

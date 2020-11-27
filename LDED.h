@@ -4,6 +4,7 @@
 #define OK         1
 #define ERRO       0
 
+//Structs referentes ao trabalho 1
 typedef struct {
     char status;
     int qtdPessoas;
@@ -23,6 +24,22 @@ typedef struct indexaPessoa {
     int rrn;
 } indexaPessoa;
 
+//Structs referentes ao trabalho 2
+typedef struct {
+    char status;
+    int followers;
+} cabecalhoSegue;
+
+typedef struct registroSegue
+{
+    char removido;
+    int idPessoaSegue;
+    int idPessoaSeguida;
+    char grauAmizade[3];
+    char startDateSegue[10];
+    char endDateSegue[10];
+}registroSegue;
+
 //Definição do tipo lista
 struct elemento{
     struct elemento *ant;
@@ -30,12 +47,26 @@ struct elemento{
     struct elemento *prox;
 };
 
-typedef struct elemento Elem;
+//Struct e funções com 2 e segue referentes ao trabalho 2
+struct elemento2{
+    struct elemento2 *ant;
+    registroSegue dado;
+    struct elemento *prox;
+};
 
+typedef struct elemento Elem;
 typedef struct elemento* Lista;
 
+typedef struct elemento2 Elem2;
+typedef struct elemento2* Lista2;
+
 Lista* cria_lista();
+Lista2* criaLista2();
+
 void libera_lista(Lista* li);
+void liberaLista2(Lista2* li);
+void insere_lista_segue(Lista2* li, registroSegue dt);
+
 int insere_lista_final(Lista* li, indexaPessoa dt);
 int insere_lista_ordenada(Lista* li, indexaPessoa dt);
 int insere_lista_inicio(Lista* li, indexaPessoa *dt);

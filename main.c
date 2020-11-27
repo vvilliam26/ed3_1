@@ -26,6 +26,7 @@ int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
 int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp);
 void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pessoa);
 int montaIndex(char *nomeArqIndex, Lista* li);
+
 //funcionalidade1.h -----------------------------------------------
 
 
@@ -492,7 +493,97 @@ void insereRegistros(FILE* fileP, FILE* fileI)
 
 //funcionalidade4.c -----------------------------------------------
 
+//funcionalidade6.h
+int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp);
+int atualizaCabecalhoSegue(FILE *fileP, cabecalhoSegue cp);
+void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSegue segue);
 
+//funcionalidade6.c
+int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp)
+{
+    if(!fileP) {
+        printf("Falha no carregamento do arquivo.\n");
+        return ERRO;
+    }
+
+    //inicializando valores da struct
+    cp->status = '0';
+    cp->followers = 0;
+
+    rewind(fileP);
+    fwrite(&(cp->status), sizeof(char), 1, fileP);
+    fwrite(&cp->followers, sizeof(int), 1, fileP);
+    for(int i = 0; i < (TAM_REG - 5); i++) //fill de lixo
+    {
+        fwrite(&LIXO, sizeof(char), 1, fileP);
+    }
+
+    return OK;
+}
+
+int atualizaCabecalhoSegue(FILE *fileP, cabecalhoSegue cp)
+{
+   if(fileP == NULL)
+   {
+       printf("Falha no carregamento do arquivo.\n");
+       return ERRO;
+   }
+
+   rewind(fileP);
+   fwrite(&(cp.status), sizeof(char), 1, fileP);
+   fwrite(&(cp.followers), sizeof(int), 1, fileP);
+
+   return OK;
+}
+
+void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSegue segue) {
+    if(fileP == NULL) {
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    //atualização cabecalho
+    int i;
+    int novoRrn = cp->followers;
+    //escrever informacao
+    fseek(fileP, ((novoRrn+1) * TAM_REG), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
+
+    //escreve removido
+    fwrite(&(segue.removido), sizeof(char), 1, fileP);
+
+    //escreve idPessoaSegue
+    fwrite(&(segue.idPessoaSegue), sizeof(int), 1, fileP);
+
+    //escreve idPessoaSeguida
+    fwrite(&(segue.idPessoaSeguida), sizeof(int), 1, fileP);
+
+    //escreve grau de amizade
+    fwrite(segue.grauAmizade, sizeof(char), strlen(segue.grauAmizade), fileP);
+    fwrite(&STR_END, sizeof(char), 1, fileP);//para casos de vetor cheio
+    int lixoTam = 3 - strlen(segue.grauAmizade) - 1; //espaco que sobrou considerando o \0
+    for(i = 0; i < lixoTam; i++)
+    {
+        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
+    }
+
+    //escreve data de inicio de seguidor
+    fwrite(segue.startDateSegue, sizeof(char), strlen(segue.startDateSegue), fileP);
+    lixoTam = 10 - strlen(segue.startDateSegue) - 1;
+
+    //escreve data final de seguidor
+    fwrite(segue.endDateSegue, sizeof(char), strlen(segue.endDateSegue), fileP);
+    fwrite(&STR_END, sizeof(char), 1, fileP);
+    lixoTam = 10 - strlen(segue.endDateSegue) - 1;
+
+    for(i = 0; i < lixoTam; i++)
+    {
+        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
+    }
+
+    cp->followers += 1;
+
+    insere_lista_segue(li, segue);
+}
 
 
 
@@ -649,6 +740,67 @@ int main()
     else if(funcionalidade == 4)
     {
 
+    }
+    else if(funcionalidade == 6)
+    {
+        char nomeArqCsv[40];
+        char nomeArquivoSegue[40];
+        FILE *csv; //arquivo de leitura
+        FILE *fileP; //arquivos de escrita: segue
+        Lista2 *li = cria_lista2(); //criando lista duplamente encadeada
+        cabecalhoSegue cp; //cabecalho do arquivo segue
+
+        scanf("%s", nomeArqCsv);
+        csv = fopen(nomeArqCsv, "r");
+        if(csv == NULL)
+        {
+            printf("Falha no carregamento do arquivo.\n");
+            return ERRO;
+        }
+
+        scanf("%s", nomeArquivoSegue);
+        fileP = fopen(nomeArquivoSegue, "wb");
+        if(fileP == NULL)
+        {
+            printf("Falha no carregamento do arquivo.\n");
+            return ERRO;
+        }
+
+        inicializaCabecalhoSegue(fileP, &cp); //monta cabecalho arquivo pessoa
+
+        fseek(csv, 45, SEEK_SET); //pulando o cabecalho do arquivo csv
+        int auxIdPessoa; //criei para auxiliar no while abaixo
+
+        registroSegue segue;
+
+        //leitura id
+        while(fscanf(csv, "%d%*c", &auxIdPessoa) > 0)
+        {
+            //valores padrao
+
+            segue.removido = '1';
+
+            fscanf(csv, "%d%*c", &(segue.idPessoaSegue));
+            fscanf(csv, "%d%*c", &(segue.idPessoaSeguida));
+            fscanf(csv, "%[^,]", segue.grauAmizade);
+            fscanf(csv, "%*c%[^,]", segue.startDateSegue);
+            fscanf(csv, "%*c%[^,\n]", segue.endDateSegue);
+
+            printf("\n%d,%d,%s,%s,%s \n", segue.idPessoaSegue, segue.idPessoaSeguida, segue.grauAmizade, segue.startDateSegue, segue.endDateSegue);
+
+            segue.grauAmizade[2] = '$';
+            //inserindo no arquivo binario
+            insereBinarioSegue(fileP, &cp, li, segue);
+        }
+        cp.status = '1';
+        atualizaCabecalhoSegue(fileP, cp);
+
+        fclose(fileP);
+        fclose(csv);
+
+        libera_lista2(li);
+
+        binarioNaTela2(nomeArquivoSegue);
     }
 
     return 0;
