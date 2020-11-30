@@ -266,7 +266,7 @@ void printaFormatado(dadoPessoa pessoa)
 
 //funcionalidade3.h -----------------------------------------------
 
-void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo);
+int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo);
 int checaIntegridadeP(FILE* fileP);
 int checaIntegridadeI(FILE *fileI);
 
@@ -277,7 +277,7 @@ int checaIntegridadeI(FILE *fileI);
 
 //funcionalidade3.c -----------------------------------------------
 
-void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
+int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
 {
     //busca por id
     if(strcmp(nomeDoCampo, "idPessoa") == 0)
@@ -299,7 +299,7 @@ void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
         if(idTeste != id)
         {
             printf("Registro inexistente.\n");
-            return;
+            return 0;
         }
         fseek(fileP, -sizeof(int), SEEK_CUR);
 
@@ -369,12 +369,22 @@ void buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
             }
 
             if(pessoa.removido == '0')
+            {
                 printf("Registro inexistente.\n ");
+                return 0;
+            }
             else
-                printaFormatado(pessoa);
+            {
+              printaFormatado(pessoa);
+              return 1;
+            }
         } else
+        {
             printf("Registro inexistente.\n");
+            return 0;
+        }
 
+        return 1;
     }
 
     else if(strcmp(nomeDoCampo, "idadePessoa") == 0)
@@ -475,7 +485,7 @@ int checaIntegridadeI(FILE *fileI)
 //funcionalidade4.h -----------------------------------------------
 
 
-//funcionalidade4.h -----------------------------------------------
+//-----------------------------------------------------------------
 
 
 
@@ -491,7 +501,7 @@ void insereRegistros(FILE* fileP, FILE* fileI)
 }
 
 
-//funcionalidade4.c -----------------------------------------------
+//-----------------------------------------------------------------
 
 //funcionalidade6.h
 int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp);
@@ -593,7 +603,7 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
 
     if(arquivoSegue == NULL) {
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        return 0;
     }
 
     rewind(arquivoSegue);
@@ -601,14 +611,13 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     fread(&status, sizeof(char), 1, arquivoSegue);
 
     //Cria Lista
-    Lista2* li;
-    li = cria_lista2();
+    Lista2* li = cria_lista2();
 
     //Checa se o arquivo foi aberto corretamente
     if(status == '0')
     {
         printf("Falha no processamento do arquivo.");
-        return;
+        return 0;
     }
     else
     {
@@ -700,6 +709,79 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     binarioNaTela2(nomeArquivoSegueOrdenado);
     return OK;
 }
+
+
+
+
+
+
+
+//funcionalidade8.h -----------------------------------------------
+
+
+
+//-----------------------------------------------------------------
+
+
+//funcionalidade8.c -----------------------------------------------
+int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int *found)
+{
+    int meio;
+    int id;
+    if(limInf > limSup) return 0;
+    else
+    {
+        meio = (limInf + limSup) / 2;
+        fseek(fileSO, meio, SEEK_SET);
+        fread(&id, sizeof(int), 1, fileSO);
+        if(idPessoa < id)
+            return buscaRegistroBinario(fileSO,idPessoa, limInf, meio - 1, &found);
+        else if(idPessoa > id)
+            return buscaRegistroBinario(fileSO, idPessoa, meio + 1, limSup, &found);
+        else if(idPessoa == id)
+        {
+            char removido;
+            fseek(fileSO, -(sizeof(int)+sizeof(char)), SEEK_CUR);
+            fread(&removido, sizeof(char), 1, fileSO);
+
+            if(removido == '0')
+                printf("Registro inexistente.");
+            else
+            {
+                registroSegue registro;
+                registro.removido = '1';
+                fread(&(registro.idPessoaSegue), sizeof(int), 1, fileSO);
+                fread(&(registro.idPessoaSeguida), sizeof(int), 1, fileSO);
+                fread(&(registro.grauAmizade), sizeof(char), 3, fileSO);
+                fread(registro.startDateSegue, sizeof(char), 10, fileSO);
+                fread(registro.endDateSegue, sizeof(char), 10, fileSO);
+
+                printaSegue(registro);
+                *found = 1;
+            }
+        }
+
+    }
+}
+
+void printaSegue(registroSegue registro)
+{
+    printf("\n");
+    printf("Segue a pessoa de código: %d\n", registro.idPessoaSeguida);
+    printf("Justificativa para seguir: ");
+    if(registro.grauAmizade == '0')
+        printf("segue porque é uma celebridade\n");
+    else if(registro.grauAmizade == '1')
+        printf("segue porque é amiga da minha amiga\n");
+    else if(registro.grauAmizade == '2')
+        printf("segue porque é minha amiga\n");
+    printf("Começou a seguir em: %s\n", registro.startDateSegue);
+    printf("Parou de seguir em: %s\n", registro.endDateSegue);
+    printf("\n");
+}
+
+//-----------------------------------------------------------------
+
 
 
 int main()
@@ -922,6 +1004,14 @@ int main()
         char nomeArquivoSegue, nomeArquivoSegueOrdenado;
         scanf("%s %s", nomeArquivoSegue, nomeArquivoSegueOrdenado);
         leBinarioSegue(nomeArquivoSegue,nomeArquivoSegueOrdenado);
+    }
+
+    else if(funcionalidade == 8)
+    {
+        FILE *fileP, *fileI, *fileSO;
+        char nomeCampo[20];
+
+
     }
 
     return 0;

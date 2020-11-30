@@ -52,7 +52,7 @@ struct elemento{
 struct elemento2{
     struct elemento2 *ant;
     registroSegue dado;
-    struct elemento *prox;
+    struct elemento2 *prox;
 };
 
 typedef struct elemento Elem;
@@ -67,7 +67,7 @@ void libera_lista(Lista* li);
 
 //Funcoes Trabalho 2
 
-Lista2* criaLista2();
+Lista2* cria_lista2();
 void liberaLista2(Lista2* li);
 int insere_lista_segue(Lista2* li, registroSegue dt);
 int insere_lista_ordenada_segue(Lista2* li, registroSegue dt);
@@ -80,4 +80,5 @@ int tamanho_lista(Lista* li);
 int lista_vazia(Lista* li);
 void imprime_lista_id(Lista* li);
 int pegar_ultimo_rrn(Lista* li);
+int compareDates(char* date1, char* date2);
 indexaPessoa retorna_ultimo_index(Lista* li);

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "LDED.h"
 
@@ -212,7 +213,7 @@ int insere_lista_segue(Lista2* li, registroSegue dt){
     Elem2 *no;
 
     if (li == NULL) return ERRO;
-    no = (Elem2*) malloc(sizeof(Elem));
+    no = (Elem2*) malloc(sizeof(Elem2));
     if (no == NULL)  return ERRO;
 
     no->dado = dt;
@@ -224,7 +225,7 @@ int insere_lista_segue(Lista2* li, registroSegue dt){
         *li = no;
     }else
 	{
-        Elem *aux;
+        Elem2 *aux;
         aux = *li;
         while (aux->prox != NULL){
             aux = aux->prox;
@@ -352,4 +353,5 @@ int compareDates(char* date1, char* date2)
         return -1;
     }
 
+    return 1;
 }
