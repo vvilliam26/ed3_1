@@ -1133,11 +1133,12 @@ int main()
         }
 
         if(buscaRegistro(fileP, fileI, nomeCampo, idPessoa) == OK)
-        {
             retornaRegistros(fileSO, idPessoa);
-        }
 
 
+        fclose(fileP);
+        fclose(fileI);
+        fclose(fileSO);
     }
 
     return 0;
