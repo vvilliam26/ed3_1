@@ -266,7 +266,7 @@ void printaFormatado(dadoPessoa pessoa)
 
 //funcionalidade3.h -----------------------------------------------
 
-int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo);
+int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo, int idOpcional);
 int checaIntegridadeP(FILE* fileP);
 int checaIntegridadeI(FILE *fileI);
 
@@ -277,15 +277,15 @@ int checaIntegridadeI(FILE *fileI);
 
 //funcionalidade3.c -----------------------------------------------
 
-int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
+int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo, int IdOpcional)
 {
     //busca por id
     if(strcmp(nomeDoCampo, "idPessoa") == 0)
     {
-        int id;
+        int id = IdOpcional;
         int rrn;
         int idTeste;
-        scanf("%d", &id);
+        //scanf("%d", &id);
 
         //acha o rrn pelo indexPessoa
         fseek(fileI, (id * 8)+4, SEEK_SET); //estah contando com o cabecalho
@@ -319,9 +319,11 @@ int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
             //le twitter
             fread(pessoa.twitterPessoa, sizeof(char), 15, fileP);
 
-           printaFormatado(pessoa);
+            printaFormatado(pessoa);
+            return 1;
         } else {
             printf("Registro inexistente."); //registro removido
+            return 0;
         }
     }
 
@@ -435,9 +437,13 @@ int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo)
         }
 
         if(qtd == 0)
+        {
             printf("Registro inexistente.");
-
+            return 0;
+        }
     }
+
+    return 0;
 }
 
 int checaIntegridadeP(FILE* fileP)
@@ -669,7 +675,7 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     if(status == '0')
     {
         printf("Falha no processamento do arquivo.");
-        return;
+        return 0;
     }
     else
     {
@@ -717,8 +723,8 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
 
 
 //funcionalidade8.h -----------------------------------------------
-
-
+int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int *found);
+void printaSegue(registroSegue registro);
 
 //-----------------------------------------------------------------
 
@@ -731,13 +737,16 @@ int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int
     if(limInf > limSup) return 0;
     else
     {
-        meio = (limInf + limSup) / 2;
-        fseek(fileSO, meio, SEEK_SET);
+        meio = (limInf + limSup);
+        if((meio / 32) % 2 != 0)
+            meio += 32;
+        meio = meio/2;
+        fseek(fileSO, meio+1, SEEK_SET);
         fread(&id, sizeof(int), 1, fileSO);
         if(idPessoa < id)
-            return buscaRegistroBinario(fileSO,idPessoa, limInf, meio - 1, &found);
+            return buscaRegistroBinario(fileSO,idPessoa, limInf, meio - 32, found);
         else if(idPessoa > id)
-            return buscaRegistroBinario(fileSO, idPessoa, meio + 1, limSup, &found);
+            return buscaRegistroBinario(fileSO, idPessoa, meio + 32, limSup, found);
         else if(idPessoa == id)
         {
             char removido;
@@ -745,9 +754,13 @@ int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int
             fread(&removido, sizeof(char), 1, fileSO);
 
             if(removido == '0')
+            {
                 printf("Registro inexistente.");
+                return 0;
+            }
             else
             {
+                /*
                 registroSegue registro;
                 registro.removido = '1';
                 fread(&(registro.idPessoaSegue), sizeof(int), 1, fileSO);
@@ -757,27 +770,85 @@ int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int
                 fread(registro.endDateSegue, sizeof(char), 10, fileSO);
 
                 printaSegue(registro);
-                *found = 1;
+                */
+                *found = meio;
+                return 1;
             }
         }
-
     }
+    return 0;
 }
 
 void printaSegue(registroSegue registro)
 {
-    printf("\n");
+    char auxDate[11]; //caso nao tenha \0
+
     printf("Segue a pessoa de código: %d\n", registro.idPessoaSeguida);
     printf("Justificativa para seguir: ");
-    if(registro.grauAmizade == '0')
+    if(registro.grauAmizade[0] == '0')
         printf("segue porque é uma celebridade\n");
-    else if(registro.grauAmizade == '1')
-        printf("segue porque é amiga da minha amiga\n");
-    else if(registro.grauAmizade == '2')
+    else if(registro.grauAmizade[0] == '1')
+        printf("segue porque é amiga de minha amiga\n");
+    else if(registro.grauAmizade[0] == '2')
+    {
         printf("segue porque é minha amiga\n");
-    printf("Começou a seguir em: %s\n", registro.startDateSegue);
-    printf("Parou de seguir em: %s\n", registro.endDateSegue);
+    }
+
+        strncpy(auxDate, registro.startDateSegue, 10);
+        strcat(auxDate, "\0");
+
+    printf("Começou a seguir em: %s\n", auxDate);
+
+        strncpy(auxDate, registro.endDateSegue, 10);
+        strcat(auxDate, "\0");
+
+    printf("Parou de seguir em: %s\n", auxDate);
     printf("\n");
+}
+
+void retornaRegistros(FILE* fileSO, int idPessoa) //funcao para achar outros registro que seguem uma id, se houver
+{
+    int tam;
+    int found = 0;
+
+    fseek(fileSO, 1, SEEK_SET);
+    fread(&tam, sizeof(int), 1, fileSO);
+
+    buscaRegistroBinario(fileSO, idPessoa, 32, ((tam-1) * 32), &found);
+
+    int id = 0; //para teste de igualdade
+    int cont = 1;//contador para o seek
+    //fseek(fileSO, found, SEEK_SET);
+
+    //posicionando
+    do
+    {
+        fread(&id, sizeof(int), 1, fileSO);
+        if(id != idPessoa)
+            break;
+
+        fseek(fileSO, -36, SEEK_CUR);
+    } while(id == idPessoa);
+
+
+    registroSegue registro;
+    fseek(fileSO, 27, SEEK_CUR);
+    //printando
+    do
+    {
+        fread(&(registro.removido), sizeof(char), 1, fileSO);
+        fread(&(registro.idPessoaSegue), sizeof(int), 1, fileSO);
+        if(registro.idPessoaSegue != idPessoa)
+            break;
+        fread(&(registro.idPessoaSeguida), sizeof(int), 1, fileSO);
+        fread(registro.grauAmizade, sizeof(char), 3, fileSO);
+        fread(registro.startDateSegue, sizeof(char), 10, fileSO);
+        fread(registro.endDateSegue, sizeof(char), 10, fileSO);
+
+        if(registro.removido == '1')
+            printaSegue(registro);
+    } while(idPessoa == registro.idPessoaSegue);
+
 }
 
 //-----------------------------------------------------------------
@@ -804,7 +875,7 @@ int main()
         csv = fopen(nomeArqCsv, "r");
         if(csv == NULL)
         {
-            printf("Falha no carregamento do arquivo.\n");
+            printf("Falha no processamento do arquivo.\n");
             return ERRO;
         }
 
@@ -812,7 +883,7 @@ int main()
         fileP = fopen(nomeArquivoPessoa, "wb");
         if(fileP == NULL)
         {
-            printf("Falha no carregamento do arquivo.\n");
+            printf("Falha no processamento do arquivo.\n");
             return ERRO;
         }
 
@@ -928,7 +999,7 @@ int main()
             return 0;
         }
 
-        buscaRegistro(fileP, fileI, nomeCampo);
+        buscaRegistro(fileP, fileI, nomeCampo, 0);
 
         fclose(fileI);
         fclose(fileP);
@@ -1001,7 +1072,7 @@ int main()
     }
 
     else if(funcionalidade == 7) {
-        char nomeArquivoSegue, nomeArquivoSegueOrdenado;
+        char nomeArquivoSegue[20], nomeArquivoSegueOrdenado[20];
         scanf("%s %s", nomeArquivoSegue, nomeArquivoSegueOrdenado);
         leBinarioSegue(nomeArquivoSegue,nomeArquivoSegueOrdenado);
     }
@@ -1009,7 +1080,62 @@ int main()
     else if(funcionalidade == 8)
     {
         FILE *fileP, *fileI, *fileSO;
-        char nomeCampo[20];
+        char nomeCampo[20], nomeArqPessoa[20],
+        nomeArqIndex[20], nomeArqSegue[20];
+        int idPessoa;
+        char status;
+
+        scanf("%s %s %s %d %s", nomeArqPessoa, nomeArqIndex, nomeCampo, &idPessoa, nomeArqSegue);
+
+        fileP = fopen(nomeArqPessoa, "rb");
+        if(fileP == NULL)
+        {
+            printf("Falha no processamento do arquivo.");
+            return 0;
+        }
+
+        fileI = fopen(nomeArqIndex, "rb");
+        if(fileI == NULL)
+        {
+            printf("Falha no processamento do arquivo.");
+            return 0;
+        }
+
+        fileSO = fopen(nomeArqSegue, "rb");
+        if(fileSO == NULL)
+        {
+            printf("Falha no processamento do arquivo.");
+            return 0;
+        }
+
+        rewind(fileP);
+        fread(&status, sizeof(char), 1, fileP);
+        if(status == '0')
+        {
+            printf("Falha no processamento do arquivo.\n");
+            return 0;
+        }
+
+        rewind(fileI);
+        fread(&status, sizeof(char), 1, fileI);
+        if(status == '0')
+        {
+            printf("Falha no processamento do arquivo.\n");
+            return 0;
+        }
+
+        rewind(fileSO);
+        fread(&status, sizeof(char), 1, fileSO);
+        if(status == '0')
+        {
+            printf("Falha no processamento do arquivo.\n");
+            return 0;
+        }
+
+        if(buscaRegistro(fileP, fileI, nomeCampo, idPessoa) == OK)
+        {
+            retornaRegistros(fileSO, idPessoa);
+        }
 
 
     }

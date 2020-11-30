@@ -89,14 +89,15 @@
 	<stdio.h>
 	<ctype.h>
 
-1606759463 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.c
+1606759534 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.c
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
 	"LDED.h"
 
-1606759510 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.h
+1606760708 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.h
 
-1606759113 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
+1606771220 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

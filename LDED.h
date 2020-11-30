@@ -68,7 +68,7 @@ void libera_lista(Lista* li);
 //Funcoes Trabalho 2
 
 Lista2* cria_lista2();
-void liberaLista2(Lista2* li);
+void libera_lista2(Lista2* li);
 int insere_lista_segue(Lista2* li, registroSegue dt);
 int insere_lista_ordenada_segue(Lista2* li, registroSegue dt);
 // -------------------//-----------------------
