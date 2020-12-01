@@ -116,3 +116,36 @@
 1606742094 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade2.h
 	"LDED.h"
 
+1606827842 source:c:\users\gabri\ed3_helipa\ed3_1\fornecido.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+
+1606827842 source:c:\users\gabri\ed3_helipa\ed3_1\lded.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+
+1606827842 c:\users\gabri\ed3_helipa\ed3_1\lded.h
+
+1606860535 source:c:\users\gabri\ed3_helipa\ed3_1\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+	"fornecido.h"
+	"funcionalidade1.h"
+	"funcionalidade2.h"
+	"LDED.h"
+	"fornecido.h"
+
+1606827842 c:\users\gabri\ed3_helipa\ed3_1\fornecido.h
+
+1606827842 c:\users\gabri\ed3_helipa\ed3_1\funcionalidade1.h
+	"LDED.h"
+
+1606827842 c:\users\gabri\ed3_helipa\ed3_1\funcionalidade2.h
+	"LDED.h"
+

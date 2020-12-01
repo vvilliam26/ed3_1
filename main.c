@@ -20,6 +20,7 @@
 //funcionalidade1.h -----------------------------------------------
 static char LIXO = '$';
 static int TAM_REG = 64;
+static int TAM_REG_SEGUE = 32;
 static int STR_END = '\0';
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
@@ -529,7 +530,7 @@ int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp)
     rewind(fileP);
     fwrite(&(cp->status), sizeof(char), 1, fileP);
     fwrite(&cp->followers, sizeof(int), 1, fileP);
-    for(int i = 0; i < (TAM_REG - 5); i++) //fill de lixo
+    for(int i = 0; i < (TAM_REG_SEGUE - 5); i++) //fill de lixo
     {
         fwrite(&LIXO, sizeof(char), 1, fileP);
     }
@@ -561,8 +562,9 @@ void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSeg
     //atualização cabecalho
     int i;
     int novoRrn = cp->followers;
+
     //escrever informacao
-    fseek(fileP, ((novoRrn+1) * TAM_REG), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
+    fseek(fileP, ((novoRrn+1) * TAM_REG_SEGUE), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
 
     //escreve removido
     fwrite(&(segue.removido), sizeof(char), 1, fileP);
@@ -584,7 +586,12 @@ void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSeg
 
     //escreve data de inicio de seguidor
     fwrite(segue.startDateSegue, sizeof(char), strlen(segue.startDateSegue), fileP);
+    fwrite(&STR_END, sizeof(char), 1, fileP);//para casos de vetor cheio
     lixoTam = 10 - strlen(segue.startDateSegue) - 1;
+    for(i = 0; i < lixoTam; i++)
+    {
+        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
+    }
 
     //escreve data final de seguidor
     fwrite(segue.endDateSegue, sizeof(char), strlen(segue.endDateSegue), fileP);
@@ -596,8 +603,8 @@ void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSeg
         fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
     }
 
-    cp->followers += 1;
 
+    cp->followers+= 1;
     insere_lista_segue(li, segue);
 }
 
@@ -622,37 +629,35 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     //Checa se o arquivo foi aberto corretamente
     if(status == '0')
     {
-        printf("Falha no processamento do arquivo.");
+        printf("Falha no carregamento do arquivo.");
         return 0;
     }
     else
     {
-        int TAM_REG = 64;
         int followers;
-        fread(&followers, sizeof(int), 1, arquivoSegue);
+        fread(&followers, sizeof(int), sizeof(followers), arquivoSegue);
 
         for(int i = 0; i <= followers; i++)
         {
+
             registroSegue segue;
 
-            fseek(arquivoSegue, (i+1)*TAM_REG, SEEK_SET);
+            fseek(arquivoSegue, (i+1)*TAM_REG_SEGUE, SEEK_SET); //Pula o cabeçalho
 
             //le removido
             fread(&(segue.removido), sizeof(segue.removido), 1, arquivoSegue);
             //le idPessoa que segue
-            fread(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 4, arquivoSegue);
+            fread(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 1, arquivoSegue);
             //le idPessoa que eh seguida
-            fread(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 4, arquivoSegue);
+            fread(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 1, arquivoSegue);
             //le grau de amizade
-            fread(segue.grauAmizade, sizeof(segue.grauAmizade), 3, arquivoSegue);
+            fread(segue.grauAmizade, sizeof(segue.grauAmizade), 1, arquivoSegue);
             //le data inicio que segue
-            fread(segue.startDateSegue, sizeof(segue.startDateSegue), 10, arquivoSegue);
+            fread(segue.startDateSegue, sizeof(segue.startDateSegue), 1, arquivoSegue);
             //le data fim que segue
-            fread(segue.endDateSegue, sizeof(segue.endDateSegue), 10, arquivoSegue);
+            fread(segue.endDateSegue, sizeof(segue.endDateSegue), 1, arquivoSegue);
 
             insere_lista_ordenada_segue(li, segue);
-
-            followers--;
         }
 
         if(followers == 0)
@@ -667,46 +672,28 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     //Abrindo o arquivo segue ordenado
     FILE* arquivoSegueOrdenado = fopen(nomeArquivoSegueOrdenado, "wb");
 
-    //Inicializar o cabeçalho
-    rewind(arquivoSegueOrdenado);
-    fwrite(&status, sizeof(char), 1, arquivoSegueOrdenado);
+    //Referente ao status do cabecalho e sua manipulacao
+    char iniciaCabecalho;
+    //27 espacos de lixo
+    char lixo[] ={'$','$','$','$','$','$','$','$','$',
+    '$','$','$','$','$','$','$','$','$',
+    '$','$','$','$','$','$','$','$','$'};
 
-    //Checa se o arquivo foi aberto corretamente
-    if(status == '0')
-    {
-        printf("Falha no processamento do arquivo.");
-        return 0;
-    }
-    else
-    {
-        int TAM_REG = 64;
-        int followers;
-        fwrite(&followers, sizeof(int), 1, arquivoSegueOrdenado);
 
-        for(int i = 0; i <= followers; i++)
-        {
-            registroSegue segue;
 
-            fseek(arquivoSegue, (i+1)*TAM_REG, SEEK_SET);
 
-            //le removido
-            fwrite(&(segue.removido), sizeof(segue.removido), 1, arquivoSegueOrdenado);
-            //le idPessoa que segue
-            fwrite(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 4, arquivoSegueOrdenado);
-            //le idPessoa que eh seguida
-            fwrite(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 4, arquivoSegueOrdenado);
-            //le grau de amizade
-            fwrite(segue.grauAmizade, sizeof(segue.grauAmizade), 3, arquivoSegueOrdenado);
-            //le data inicio que segue
-            fwrite(segue.startDateSegue, sizeof(segue.startDateSegue), 10, arquivoSegueOrdenado);
-            //le data fim que segue
-            fwrite(segue.endDateSegue, sizeof(segue.endDateSegue), 10, arquivoSegueOrdenado);
-            followers--;
-        }
-
-        if(followers == 0)
-            printf("Registro inexistente.\n");
-
+    //Trabalho com elemento para percorrer até o final do registro
+    Elem2* aux;
+    aux = *li;
+    iniciaCabecalho = '1';
+    while(aux != NULL){
+        fwrite(&iniciaCabecalho, sizeof(char), 1, arquivoSegue);
+        fwrite(&aux->dado.idPessoaSegue, sizeof(int), 1, arquivoSegue);
+        fwrite(&aux->dado.idPessoaSeguida, sizeof(int), 1, arquivoSegue);
+        fwrite(aux->dado.grauAmizade, sizeof(aux->dado.grauAmizade), 1, arquivoSegue);
+        fwrite(aux->dado.startDateSegue, sizeof(aux->dado.startDateSegue), 1, arquivoSegue);
+        fwrite(aux->dado.endDateSegue, sizeof(aux->dado.endDateSegue), 1, arquivoSegue);
+        aux = (*aux).prox;
     }
 
     libera_lista2(li);
@@ -715,12 +702,6 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
     binarioNaTela2(nomeArquivoSegueOrdenado);
     return OK;
 }
-
-
-
-
-
-
 
 //funcionalidade8.h -----------------------------------------------
 int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int *found);
@@ -858,13 +839,14 @@ void retornaRegistros(FILE* fileSO, int idPessoa) //funcao para achar outros reg
 int main()
 {
     int funcionalidade;
-
+    char nomeArqCsv[40];
+    char nomeArquivoSegueOrdenado[300];
+    char nomeArquivoSegue[40];
 
     scanf("%d", &funcionalidade);
 
     if(funcionalidade == 1) //leitura e gravacao de arquivos
     {
-        char nomeArqCsv[40];
         char nomeArquivoPessoa[40], nomeArquivoIndex[40];
         FILE *csv; //arquivo de leitura
         FILE *fileP; //arquivos de escrita: pessoa e index
@@ -1011,8 +993,6 @@ int main()
     }
     else if(funcionalidade == 6)
     {
-        char nomeArqCsv[40];
-        char nomeArquivoSegue[40];
         FILE *csv; //arquivo de leitura
         FILE *fileP; //arquivos de escrita: segue
         Lista2 *li = cria_lista2(); //criando lista duplamente encadeada
@@ -1036,33 +1016,28 @@ int main()
 
         inicializaCabecalhoSegue(fileP, &cp); //monta cabecalho arquivo segue
 
-        fseek(csv, 45, SEEK_SET); //pulando o cabecalho do arquivo csv
-        int auxIdPessoa; //criei para auxiliar no while abaixo
+        fseek(csv, 83, SEEK_SET); //pulando o cabecalho do arquivo csv
 
         registroSegue segue;
-
+        int auxFunc = 1118;
         //leitura id
-        while(fscanf(csv, "%d%*c", &auxIdPessoa) > 0)
+        for(int j = 0; j < auxFunc; j++)
         {
             //valores padrao
-
             segue.removido = '1';
-
             fscanf(csv, "%d%*c", &(segue.idPessoaSegue));
             fscanf(csv, "%d%*c", &(segue.idPessoaSeguida));
             fscanf(csv, "%[^,]", segue.grauAmizade);
             fscanf(csv, "%*c%[^,]", segue.startDateSegue);
             fscanf(csv, "%*c%[^,\n]", segue.endDateSegue);
 
-            //printf("\n%d,%d,%s,%s,%s \n", segue.idPessoaSegue, segue.idPessoaSeguida, segue.grauAmizade, segue.startDateSegue, segue.endDateSegue);
 
-            segue.grauAmizade[2] = '$';
             //inserindo no arquivo binario
             insereBinarioSegue(fileP, &cp, li, segue);
         }
         cp.status = '1';
         atualizaCabecalhoSegue(fileP, cp);
-
+        //Fechando os dois arquivos
         fclose(fileP);
         fclose(csv);
 
@@ -1072,7 +1047,6 @@ int main()
     }
 
     else if(funcionalidade == 7) {
-        char nomeArquivoSegue[20], nomeArquivoSegueOrdenado[20];
         scanf("%s %s", nomeArquivoSegue, nomeArquivoSegueOrdenado);
         leBinarioSegue(nomeArquivoSegue,nomeArquivoSegueOrdenado);
     }
