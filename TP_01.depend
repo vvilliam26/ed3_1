@@ -149,3 +149,17 @@
 1606827842 c:\users\gabri\ed3_helipa\ed3_1\funcionalidade2.h
 	"LDED.h"
 
+1608061908 source:c:\users\gabri\tp03\ed3_1\fornecido.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+
+1608061908 source:c:\users\gabri\tp03\ed3_1\lded.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+
+1608061908 c:\users\gabri\tp03\ed3_1\lded.h
+

@@ -10,7 +10,8 @@
 */
 #include "LDED.h"
 #include "fornecido.h"
-
+#include "funcionalidade6.c"
+#include "funcionalidade7.c"
 // Vinicius William da Silva - 11233842
 // Gabriel Fernandes Araujo - 11200334
 
@@ -18,10 +19,7 @@
 
 
 //funcionalidade1.h -----------------------------------------------
-static char LIXO = '$';
 static int TAM_REG = 64;
-static int TAM_REG_SEGUE = 32;
-static int STR_END = '\0';
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
 int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp);
@@ -511,197 +509,13 @@ void insereRegistros(FILE* fileP, FILE* fileI)
 //-----------------------------------------------------------------
 
 //funcionalidade6.h
-int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp);
-int atualizaCabecalhoSegue(FILE *fileP, cabecalhoSegue cp);
-void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSegue segue);
+
 
 //funcionalidade6.c
-int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp)
-{
-    if(!fileP) {
-        printf("Falha no carregamento do arquivo.\n");
-        return ERRO;
-    }
 
-    //inicializando valores da struct
-    cp->status = '0';
-    cp->followers = 0;
-
-    rewind(fileP);
-    fwrite(&(cp->status), sizeof(char), 1, fileP);
-    fwrite(&cp->followers, sizeof(int), 1, fileP);
-    for(int i = 0; i < (TAM_REG_SEGUE - 5); i++) //fill de lixo
-    {
-        fwrite(&LIXO, sizeof(char), 1, fileP);
-    }
-
-    return OK;
-}
-
-int atualizaCabecalhoSegue(FILE *fileP, cabecalhoSegue cp)
-{
-   if(fileP == NULL)
-   {
-       printf("Falha no carregamento do arquivo.\n");
-       return ERRO;
-   }
-
-   rewind(fileP);
-   fwrite(&(cp.status), sizeof(char), 1, fileP);
-   fwrite(&(cp.followers), sizeof(int), 1, fileP);
-
-   return OK;
-}
-
-void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSegue segue) {
-    if(fileP == NULL) {
-        printf("Falha no carregamento do arquivo.\n");
-        return;
-    }
-
-    //atualização cabecalho
-    int i;
-    int novoRrn = cp->followers;
-
-    //escrever informacao
-    fseek(fileP, ((novoRrn+1) * TAM_REG_SEGUE), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
-
-    //escreve removido
-    fwrite(&(segue.removido), sizeof(char), 1, fileP);
-
-    //escreve idPessoaSegue
-    fwrite(&(segue.idPessoaSegue), sizeof(int), 1, fileP);
-
-    //escreve idPessoaSeguida
-    fwrite(&(segue.idPessoaSeguida), sizeof(int), 1, fileP);
-
-    //escreve grau de amizade
-    fwrite(segue.grauAmizade, sizeof(char), strlen(segue.grauAmizade), fileP);
-    fwrite(&STR_END, sizeof(char), 1, fileP);//para casos de vetor cheio
-    int lixoTam = 3 - strlen(segue.grauAmizade) - 1; //espaco que sobrou considerando o \0
-    for(i = 0; i < lixoTam; i++)
-    {
-        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
-    }
-
-    //escreve data de inicio de seguidor
-    fwrite(segue.startDateSegue, sizeof(char), strlen(segue.startDateSegue), fileP);
-    fwrite(&STR_END, sizeof(char), 1, fileP);//para casos de vetor cheio
-    lixoTam = 10 - strlen(segue.startDateSegue) - 1;
-    for(i = 0; i < lixoTam; i++)
-    {
-        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
-    }
-
-    //escreve data final de seguidor
-    fwrite(segue.endDateSegue, sizeof(char), strlen(segue.endDateSegue), fileP);
-    fwrite(&STR_END, sizeof(char), 1, fileP);
-    lixoTam = 10 - strlen(segue.endDateSegue) - 1;
-
-    for(i = 0; i < lixoTam; i++)
-    {
-        fwrite(&LIXO, sizeof(char), 1, fileP); //fill de lixo
-    }
-
-
-    cp->followers+= 1;
-    insere_lista_segue(li, segue);
-}
 
 //funcionalidade7.c
-int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
-{
-    //Abre arquivo inicial
-    FILE* arquivoSegue = fopen(nomeArquivoSegue, "rb");
 
-    if(arquivoSegue == NULL) {
-        printf("Falha no carregamento do arquivo.\n");
-        return 0;
-    }
-
-    rewind(arquivoSegue);
-    char status;
-    fread(&status, sizeof(char), 1, arquivoSegue);
-
-    //Cria Lista
-    Lista2* li = cria_lista2();
-
-    //Checa se o arquivo foi aberto corretamente
-    if(status == '0')
-    {
-        printf("Falha no carregamento do arquivo.");
-        return 0;
-    }
-    else
-    {
-        int followers;
-        fread(&followers, sizeof(int), sizeof(followers), arquivoSegue);
-
-        for(int i = 0; i <= followers; i++)
-        {
-
-            registroSegue segue;
-
-            fseek(arquivoSegue, (i+1)*TAM_REG_SEGUE, SEEK_SET); //Pula o cabeçalho
-
-            //le removido
-            fread(&(segue.removido), sizeof(segue.removido), 1, arquivoSegue);
-            //le idPessoa que segue
-            fread(&(segue.idPessoaSegue), sizeof(segue.idPessoaSegue), 1, arquivoSegue);
-            //le idPessoa que eh seguida
-            fread(&segue.idPessoaSeguida, sizeof(segue.idPessoaSeguida), 1, arquivoSegue);
-            //le grau de amizade
-            fread(segue.grauAmizade, sizeof(segue.grauAmizade), 1, arquivoSegue);
-            //le data inicio que segue
-            fread(segue.startDateSegue, sizeof(segue.startDateSegue), 1, arquivoSegue);
-            //le data fim que segue
-            fread(segue.endDateSegue, sizeof(segue.endDateSegue), 1, arquivoSegue);
-
-            insere_lista_ordenada_segue(li, segue);
-        }
-
-        if(followers == 0)
-            printf("Registro inexistente.\n");
-
-    }
-
-    //Fechando o arquivo segue
-
-    fclose(arquivoSegue);
-
-    //Abrindo o arquivo segue ordenado
-    FILE* arquivoSegueOrdenado = fopen(nomeArquivoSegueOrdenado, "wb");
-
-    //Referente ao status do cabecalho e sua manipulacao
-    char iniciaCabecalho;
-    //27 espacos de lixo
-    char lixo[] ={'$','$','$','$','$','$','$','$','$',
-    '$','$','$','$','$','$','$','$','$',
-    '$','$','$','$','$','$','$','$','$'};
-
-
-
-
-    //Trabalho com elemento para percorrer até o final do registro
-    Elem2* aux;
-    aux = *li;
-    iniciaCabecalho = '1';
-    while(aux != NULL){
-        fwrite(&iniciaCabecalho, sizeof(char), 1, arquivoSegue);
-        fwrite(&aux->dado.idPessoaSegue, sizeof(int), 1, arquivoSegue);
-        fwrite(&aux->dado.idPessoaSeguida, sizeof(int), 1, arquivoSegue);
-        fwrite(aux->dado.grauAmizade, sizeof(aux->dado.grauAmizade), 1, arquivoSegue);
-        fwrite(aux->dado.startDateSegue, sizeof(aux->dado.startDateSegue), 1, arquivoSegue);
-        fwrite(aux->dado.endDateSegue, sizeof(aux->dado.endDateSegue), 1, arquivoSegue);
-        aux = (*aux).prox;
-    }
-
-    libera_lista2(li);
-    fclose(arquivoSegueOrdenado);
-
-    binarioNaTela2(nomeArquivoSegueOrdenado);
-    return OK;
-}
 
 //funcionalidade8.h -----------------------------------------------
 int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int *found);
