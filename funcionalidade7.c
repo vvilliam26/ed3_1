@@ -71,10 +71,6 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
 
     //Referente ao status do cabecalho e sua manipulacao
     char iniciaCabecalho;
-    //27 espacos de lixo
-    char lixo[] ={'$','$','$','$','$','$','$','$','$',
-    '$','$','$','$','$','$','$','$','$',
-    '$','$','$','$','$','$','$','$','$'};
 
 
 

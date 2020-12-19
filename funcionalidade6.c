@@ -4,9 +4,7 @@
 
 #include "funcionalidade6.h"
 
-static char LIXO = '$';
 static int TAM_REG_SEGUE = 32;
-static int STR_END = '\0';
 
 int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp)
 {

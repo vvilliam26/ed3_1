@@ -95,25 +95,28 @@
 	<string.h>
 	"LDED.h"
 
-1606760708 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.h
+1608416799 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.h
 
-1606771220 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
+1608417479 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"LDED.h"
 	"fornecido.h"
-	"funcionalidade1.h"
-	"funcionalidade2.h"
+	"funcionalidade1.c"
+	"funcionalidade2.c"
+	"funcionalidade3.c"
 	"LDED.h"
 	"fornecido.h"
+	"funcionalidade6.c"
+	"funcionalidade7.c"
 
 1606742094 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\fornecido.h
 
-1606742094 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade1.h
+1608416872 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade1.h
 	"LDED.h"
 
-1606742094 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade2.h
+1608417020 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade2.h
 	"LDED.h"
 
 1606827842 source:c:\users\gabri\ed3_helipa\ed3_1\fornecido.c
@@ -162,4 +165,39 @@
 	"LDED.h"
 
 1608061908 c:\users\gabri\tp03\ed3_1\lded.h
+
+1608416916 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade1.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funcionalidade1.h"
+	"fornecido.h"
+
+1608417046 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade2.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"LDED.h"
+	"funcionalidade2.h"
+
+1608416983 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade6.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funcionalidade6.h"
+
+1608415585 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade6.h
+
+1608416996 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade7.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funcionalidade7.h"
+
+1608415585 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade7.h
+
+1608417222 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade3.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
 

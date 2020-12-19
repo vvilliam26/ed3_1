@@ -1,5 +1,3 @@
-
-/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,13 +6,12 @@
 #include "fornecido.h"
 
 char LIXO = '$';
-int TAM_REG = 64;
 int NULL_INT = -1;
 int STR_END = '\0';
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp) {
     if(!fileP) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
 
@@ -37,7 +34,7 @@ int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp)
 {
    if(fileP == NULL)
    {
-       printf("Falha no processamento do arquivo.\n");
+       printf("Falha no carregamento do arquivo.\n");
        return ERRO;
    }
 
@@ -50,7 +47,7 @@ int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp)
 
 void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pessoa) {
     if(fileP == NULL) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
@@ -106,7 +103,7 @@ int montaIndex(char *nomeArqIndex, Lista* li)
     char status = '0';
 
     if(fileI == NULL) {
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
 
@@ -138,4 +135,3 @@ int montaIndex(char *nomeArqIndex, Lista* li)
     return OK;
 }
 
-*/

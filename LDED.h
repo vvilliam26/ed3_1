@@ -1,3 +1,6 @@
+#ifndef LDED_H_INCLUDED
+#define LDED_H_INCLUDED
+
 #define FALSO      0
 #define VERDADEIRO 1
 
@@ -5,12 +8,13 @@
 #define ERRO       0
 
 //Structs referentes ao trabalho 1
-typedef struct {
+typedef struct
+ {
     char status;
     int qtdPessoas;
 } cabecalhoArqPessoa;
 
-typedef struct dadoPessoa
+typedef struct
 {
     char removido;
     int idPessoa;
@@ -82,3 +86,5 @@ void imprime_lista_id(Lista* li);
 int pegar_ultimo_rrn(Lista* li);
 int compareDates(char* date1, char* date2);
 indexaPessoa retorna_ultimo_index(Lista* li);
+
+#endif // LDED_H_INCLUDED

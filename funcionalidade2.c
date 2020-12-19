@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -28,7 +28,7 @@ void leBinario(FILE* fileP)
         int qtdPessoas;
         fread(&qtdPessoas, sizeof(int), 1, fileP);
 
-        for(int i = 0; i < qtdPessoas; i++)
+        for(int i = 0; i <= qtdPessoas; i++)
         {
             char removido;
             dadoPessoa pessoa;
@@ -52,17 +52,17 @@ void leBinario(FILE* fileP)
 
                 printaFormatado(pessoa);
             }
-            else
-            {
-                printf("Registro inexistente.");
-            }
         }
+
+        if(qtdPessoas == 0)
+            printf("Registro inexistente.\n");
+
     }
 }
 
 void printaFormatado(dadoPessoa pessoa)
 {
-    printf("Dados da pessoa de código %d\n", pessoa.idadePessoa);
+    printf("Dados da pessoa de código %d\n", pessoa.idPessoa);
 
     if(strlen(pessoa.nomePessoa) > 0)
         printf("Nome: %s\n", pessoa.nomePessoa);
@@ -70,11 +70,13 @@ void printaFormatado(dadoPessoa pessoa)
         printf("Nome: -\n");
 
     if(pessoa.idadePessoa == -1)
-        printf("Idade: - anos\n", pessoa.idadePessoa);
+        printf("Idade: -\n");
     else
         printf("Idade: %d anos\n", pessoa.idadePessoa);
 
     printf("Twitter: %s\n\n", pessoa.twitterPessoa);
 
+
+
 }
-*/
+
