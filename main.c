@@ -4,6 +4,7 @@
 
 #include "fornecido.h"
 #include "LDED.h"
+#include "graph.h"
 
 #include "funcionalidade1.c"
 #include "funcionalidade2.c"
@@ -293,6 +294,11 @@ int main()
         fclose(fileP);
         fclose(fileI);
         fclose(fileSO);
+    }
+
+    else if(funcionalidade == 9)
+    {
+
     }
 
     return 0;

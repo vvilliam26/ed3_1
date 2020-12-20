@@ -83,7 +83,7 @@
 	"funcionalidade1.h"
 	"fornecido.h"
 
-1606742094 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\fornecido.c
+1606243508 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\fornecido.c
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
@@ -97,21 +97,21 @@
 
 1608416799 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\lded.h
 
-1608417479 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
+1608421950 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	"LDED.h"
 	"fornecido.h"
+	"LDED.h"
+	"graph.h"
 	"funcionalidade1.c"
 	"funcionalidade2.c"
 	"funcionalidade3.c"
-	"LDED.h"
-	"fornecido.h"
 	"funcionalidade6.c"
 	"funcionalidade7.c"
+	"funcionalidade8.c"
 
-1606742094 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\fornecido.h
+1606250291 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\fornecido.h
 
 1608416872 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade1.h
 	"LDED.h"
@@ -200,4 +200,24 @@
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+
+1608421373 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade9.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1608417499 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\funcionalidade8.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1607122339 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\queue.c
+	<stdlib.h>
+	<string.h>
+
+1607122310 source:c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\stack.c
+	<stdlib.h>
+	<string.h>
+
+1608421465 c:\users\vini-\documents\facu\4 semestre\ed 3\ed3_1\graph.h
 
