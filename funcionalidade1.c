@@ -5,15 +5,13 @@
 #include "funcionalidade1.h"
 #include "fornecido.h"
 
-char LIXO = '$';
-int NULL_INT = -1;
-int STR_END = '\0';
-
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp) {
     if(!fileP) {
         printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
+
+    char LIXO = '$';
 
     //inicializando valores da struct
     cp->status = '0';
@@ -22,7 +20,7 @@ int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp) {
     rewind(fileP);
     fwrite(&(cp->status), sizeof(char), 1, fileP);
     fwrite(&cp->qtdPessoas, sizeof(int), 1, fileP);
-    for(int i = 0; i < (TAM_REG - 5); i++) //fill de lixo
+    for(int i = 0; i < (64 - 5); i++) //fill de lixo
     {
         fwrite(&LIXO, sizeof(char), 1, fileP);
     }
@@ -53,10 +51,12 @@ void insereBinario(FILE *fileP, cabecalhoArqPessoa *cp, Lista* li, dadoPessoa pe
 
     //atualização cabecalho
     int i;
+    char STR_END = '\0';
+    char LIXO = '$';
 
     //escrever informacao
     int novoRrn = cp->qtdPessoas; //rrn da pessoa atual
-    fseek(fileP, ((novoRrn+1) * TAM_REG), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
+    fseek(fileP, ((novoRrn+1) * 64), SEEK_SET); //posiciona o ponteiro no registro a ser escrito pulando o cabecalho
 
     //escreve removido
     fwrite(&(pessoa.removido), sizeof(char), 1, fileP);
@@ -101,6 +101,7 @@ int montaIndex(char *nomeArqIndex, Lista* li)
 
     fileI = fopen(nomeArqIndex, "wb");
     char status = '0';
+    char LIXO = '$';
 
     if(fileI == NULL) {
         printf("Falha no carregamento do arquivo.\n");

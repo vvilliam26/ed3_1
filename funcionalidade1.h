@@ -2,7 +2,7 @@
 #define FUNCIONALIDADE1_H_INCLUDED
 
 #include "LDED.h"
-static int TAM_REG = 64;
+
 
 int inicializaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa *cp);
 int atualizaCabecalhoPessoa(FILE *fileP, cabecalhoArqPessoa cp);

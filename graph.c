@@ -3,44 +3,93 @@
 #include <string.h>
 
 #include "graph.h"
-
-struct graph {
-    int V;
-    int A;
-    link *node;
-};
-
-struct node {
-    vertex w;
-    link prox;
-};
+#include "ListaDinEncad.h"
+#include "stack.h"
 
 
-link newNode(vertex w, link prox)
+//nesse caso, usamos listas encadeadas simples
+
+Graph* cria_grafo_adj(int V)
 {
-    link no = malloc(sizeof(struct node));
-    strcpy(no->w, w);
-    no->prox = prox;
+    Graph* G = (Graph *) malloc(sizeof(Graph));
 
-    return no;
-}
+    if(G != NULL)
+    {
+        G->V = V;
+        G->A = 0;
+        G->qtd = 0;
+        G->itens = (ElemL**)
+            malloc(V * sizeof(ElemL*));
+        if(G->itens == NULL)
+        {
+            free(G);
+            return NULL;
+        }
 
-Graph cria_grafo_adj(int V)
-{
-    Graph G = malloc(sizeof *G);
-    G->V = V;
-    G->A = 0;
-    G->node = malloc(V * sizeof(link));
-    for(vertex v = 0; v < V; v++)
-        G->node[v] = NULL;
+        for(int i = 0; i<G->V; i++)
+            G->itens[i] = NULL;
+    }
 
     return G;
 }
 
-void insere_aresta_grafo(Graph G, vertex v, vertex w)
+void libera_grafo_adj(Graph* G)
 {
-    for(link a = G->node[v]; a != NULL; a = a->prox)
-        if(strcmp(a->w, w) == 0)   return;
-    G->node[v] = newNode(w, G->node[v]);
-    G->A++;
+    if(G != NULL)
+    {
+        for(int i =0; i< G->V; i++)
+        {
+            if(G->itens[i] != NULL)
+                free(G->itens[i]);
+        }
+        free(G->itens);
+        free(G);
+    }
 }
+
+int insere_vertice(Graph* G, char* nome)
+{
+    if(G == NULL || G->qtd == G->V)
+        return 0;
+
+    ElemL* novo = (ElemL*) malloc(sizeof(ElemL));
+    if(novo == NULL)
+        return 0;
+
+    strcpy(novo->dado, nome);
+    novo->prox = NULL;
+
+    G->itens[G->qtd] = novo;
+
+    G->qtd++;
+
+    return 1;
+}
+
+
+
+int existeVertice(Graph* G, char* nome)
+{
+    for(int i=0; i < G->qtd; i++)
+    {
+        if(strcmp(G->itens[i]->dado, nome) == 0)
+            return i;
+    }
+
+    return 0;
+}
+
+int numArestas(ElemL* vertex)
+{
+    int A = 0;
+    ElemL* aux = vertex->prox;
+
+    while(aux != NULL)
+    {
+        A++;
+        aux = aux->prox;
+    }
+
+    return A;
+}
+

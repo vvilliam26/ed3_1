@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "funcionalidade6.h"
+#include "LDED.h"
 
 static int TAM_REG_SEGUE = 32;
 
@@ -12,6 +13,8 @@ int inicializaCabecalhoSegue(FILE *fileP, cabecalhoSegue *cp)
         printf("Falha no carregamento do arquivo.\n");
         return ERRO;
     }
+
+    char LIXO = '$';
 
     //inicializando valores da struct
     cp->status = '0';
@@ -48,6 +51,9 @@ void insereBinarioSegue(FILE *fileP, cabecalhoSegue *cp, Lista2* li, registroSeg
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
+
+    char STR_END = '\0';
+    char LIXO = '$';
 
     //atualização cabecalho
     int i;

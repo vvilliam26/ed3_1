@@ -39,7 +39,50 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="fornecido.h" />
+		<Unit filename="funcionalidade1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade1.h" />
+		<Unit filename="funcionalidade12.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade12.h" />
+		<Unit filename="funcionalidade2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade2.h" />
+		<Unit filename="funcionalidade3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade3.h" />
+		<Unit filename="funcionalidade6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade6.h" />
+		<Unit filename="funcionalidade7.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade7.h" />
+		<Unit filename="funcionalidade8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade8.h" />
+		<Unit filename="funcionalidade9.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcionalidade9.h" />
+		<Unit filename="graph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="graph.h" />
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="queue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="queue.h" />
+		<Unit filename="stack.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

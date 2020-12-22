@@ -305,6 +305,7 @@ int insere_lista_ordenada_segue(Lista2* li, registroSegue dt)
 //A fim de facilitar a comparacao entre datas, a funcao analisa por dia, mes e ano se as datas sao correspondentes
 int compareDates(char* date1, char* date2)
 {
+
     char day1[2], day2[2],
     month1[2], month2[2],
     year1[4], year2[4];

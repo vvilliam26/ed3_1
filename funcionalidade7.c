@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "funcionalidade7.h"
-
-
+#include "LDED.h"
+#include "fornecido.h"
 
 int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
 {
@@ -16,12 +16,15 @@ int leBinarioSegue(char* nomeArquivoSegue, char* nomeArquivoSegueOrdenado)
         return 0;
     }
 
+    int TAM_REG_SEGUE = 32;
+
     rewind(arquivoSegue);
     char status;
     fread(&status, sizeof(char), 1, arquivoSegue);
 
     //Cria Lista
     Lista2* li = cria_lista2();
+
 
     //Checa se o arquivo foi aberto corretamente
     if(status == '0')

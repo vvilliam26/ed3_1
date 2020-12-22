@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "LDED.h"
+#include "funcionalidade3.h"
+#include "funcionalidade2.h"
 
 int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo, int IdOpcional)
 {
@@ -19,7 +22,7 @@ int buscaRegistro(FILE* fileP, FILE* fileI, char *nomeDoCampo, int IdOpcional)
 
         //le os dados em pessoa pelo rrn
         char removido;
-        fseek(fileP, ((rrn+1) * TAM_REG), SEEK_SET); //pula o cabecalho e os outros registros
+        fseek(fileP, ((rrn+1) * 64), SEEK_SET); //pula o cabecalho e os outros registros
         fread(&removido, sizeof(char), 1, fileP);
         fread(&idTeste, sizeof(int), 1, fileP);
         if(idTeste != id)

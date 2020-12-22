@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "funcionalidade8.h"
 
 int buscaRegistroBinario(FILE* fileSO, int idPessoa, int limInf, int limSup, int *found)
 {

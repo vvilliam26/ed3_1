@@ -5,13 +5,16 @@
 #include "fornecido.h"
 #include "LDED.h"
 #include "graph.h"
+#include "ListaDinEncad.h"
 
-#include "funcionalidade1.c"
-#include "funcionalidade2.c"
-#include "funcionalidade3.c"
-#include "funcionalidade6.c"
-#include "funcionalidade7.c"
-#include "funcionalidade8.c"
+#include "funcionalidade1.h"
+#include "funcionalidade2.h"
+#include "funcionalidade3.h"
+#include "funcionalidade6.h"
+#include "funcionalidade7.h"
+#include "funcionalidade8.h"
+#include "funcionalidade9.h"
+#include "funcionalidade12.h"
 
 // Vinicius William da Silva - 11233842
 // Gabriel Fernandes Araujo - 11200334
@@ -106,7 +109,7 @@ int main()
         binarioNaTela1(nomeArquivoPessoa, nomeArquivoIndex);
     }
 
-    else if(funcionalidade == 2)
+     if(funcionalidade == 2)
     {
         char nomeArq[20];
         FILE* fileP;
@@ -298,6 +301,33 @@ int main()
 
     else if(funcionalidade == 9)
     {
+        char nFileP[25], nFileI[25], nFileS[25]; //nome de todos os arquivos
+        scanf("%s %s %s", nFileP, nFileI, nFileS);
+        Graph* G;
+        int x; //checar integridade
+
+        x = constroiGrafo(nFileS, nFileP, nFileI, &G);
+
+        if(x)
+            printa_f9(G);
+    }
+
+    else if(funcionalidade == 12)
+    {
+        char nFileP[25], nFileI[25], nFileS[25], nomeFofoca[41]; //nome de todos os arquivos
+        scanf("%s %s %s", nFileP, nFileI, nFileS);
+        scan_quote_string(nomeFofoca);
+        Graph* G;
+        int caminho;
+
+        constroiGrafo(nFileS, nFileP, nFileI, &G);
+
+        caminho = dfs(G, nomeFofoca);
+
+        if(caminho == 0)
+            printf("A FOFOCA NAO RETORNOU\n");
+        else
+            printf("%d\n", caminho);
 
     }
 
